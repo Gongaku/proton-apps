@@ -21,7 +21,7 @@ declare -A rpm=(
 # Output:
 # 	Stirng containing rpm version
 #######################################
-function get_installed_version() {
+get_installed_version() {
   rpm -qi "$1" | grep "Version" | awk '{print $3}'
 }
 
@@ -30,9 +30,13 @@ function get_installed_version() {
 # Argument:
 # 	URI of download page
 #######################################
-function get_latest_version() {
+get_latest_version() {
   local url="$1"
-  curl -s "$url" | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+(-beta[0-9]+)?' | sort -r | head -n 1
+
+  curl -s "$url" \
+		| grep -Eo '[0-9]+\.[0-9]+\.[0-9]+(-beta[0-9]+)?' \
+		| sort -r \
+		| head -n 1
 }
 
 #######################################
@@ -42,7 +46,7 @@ function get_latest_version() {
 # 	RPM file name
 # 	Version to download
 #######################################
-function download_rpm() {
+download_rpm() {
 	local download_url="$1"
 	local rpm_file="$2"
 	local latest_version="$3"
@@ -58,7 +62,7 @@ function download_rpm() {
 # Argument:
 # 	Application name
 #######################################
-function get_package {
+get_package() {
 	local app_name="$1"
 	case "$app_name" in
     "protonmail")
@@ -84,7 +88,7 @@ function get_package {
 # Argument:
 # 	Application name
 #######################################
-function handle_app() {
+handle_app() {
   local app_name="$1"
   local download_url="${apps["$app_name"]}"
 	local rpm_file="${rpm["$app_name"]}"
@@ -107,6 +111,7 @@ function handle_app() {
 				download_url=$(dirname "$download_url")
 				download_rpm "$download_url" "$rpm_file" "$latest_version"
         echo "$app_name updated to $latest_version."
+
       else
         echo "$app_name is already the latest version."
       fi
@@ -122,11 +127,11 @@ function handle_app() {
   echo ""
 }
 
-function main() {
+main() {
 	program="$1"
 	case "$program" in
 		*mail|*pass|*vpn)
-			handle_app "$program"
+			handle_app "$program" >&2
 			;;
 		*)
 			cat <<- EOF

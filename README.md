@@ -6,7 +6,12 @@ Otherwise, if the application is already installed, it will update to the latest
 
 ## Usage
 ```sh
-./proton_updater.sh APP
+Usage: proton_updater.sh PROTON-APP
+
+This is a script meant to update the linux version of a given Proton Application
+
+ PROTON-APP   Name of the Proton application.
+Options: protonpass, protonmail, protonvpn
 
 
 ```
